@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Intelligent Customer Support</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        .message-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-indigo-600 bg-opacity-95 backdrop-blur-md text-white p-4 shadow-md flex items-center justify-between z-10 border-b border-indigo-700">
+        <div class="flex items-center gap-3">
+            <div class="bg-white/20 p-2 rounded-lg">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+            </div>
+            <h1 class="text-xl font-semibold tracking-wide">Intelligent Customer Support</h1>
+        </div>
+        <div class="text-sm font-medium bg-indigo-500/50 py-1 px-3 rounded-full border border-indigo-400/50">
+            Powered by RAG & Local LLM
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden p-4 gap-4">
+        
+        <!-- Left Side: Upload & Chat -->
+        <div class="w-1/3 flex flex-col gap-4 h-full">
+            
+            <!-- Upload Card -->
+            <div class="glass-panel p-5 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+                <h2 class="font-semibold text-lg mb-4 flex items-center gap-2 text-indigo-900">
+                    <span class="bg-indigo-100 text-indigo-700 w-7 h-7 flex items-center justify-center rounded-lg text-sm">1</span>
+                    Upload Document
+                </h2>
+                <div class="flex flex-col gap-3">
+                    <input type="file" id="fileInput" accept=".pdf" class="block w-full text-sm text-gray-500
+                        file:mr-4 file:py-2.5 file:px-4
+                        file:rounded-xl file:border-0
+                        file:text-sm file:font-semibold
+                        file:bg-indigo-50 file:text-indigo-700
+                        hover:file:bg-indigo-100 transition-colors
+                        cursor-pointer border border-gray-200 rounded-xl bg-white
+                    ">
+                    <button onclick="uploadFile()" id="uploadBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-4 rounded-xl transition-all shadow-sm active:scale-[0.98] flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                        Index Document
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat Card -->
+            <div class="glass-panel p-5 rounded-2xl shadow-sm hover:shadow-md transition-shadow flex-1 flex flex-col min-h-0">
+                <h2 class="font-semibold text-lg mb-3 flex items-center gap-2 text-indigo-900">
+                    <span class="bg-indigo-100 text-indigo-700 w-7 h-7 flex items-center justify-center rounded-lg text-sm">2</span>
+                    Ask Assistant
+                </h2>
+                
+                <!-- Chat History Area -->
+                <div id="chatBox" class="flex-1 p-4 mb-4 overflow-y-auto bg-white/60 rounded-xl border border-gray-100 flex flex-col gap-4 scroll-smooth">
+                    <div class="h-full flex flex-col items-center justify-center text-gray-400 text-sm">
+                        <svg class="w-12 h-12 mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                        <p>Ask questions about your uploaded PDF</p>
+                    </div>
+                </div>
+                
+                <!-- Chat Input Box -->
+                <div class="flex gap-2 relative">
+                    <input type="text" id="questionInput" placeholder="e.g. How long is the warranty?" class="flex-1 border border-gray-200 rounded-xl p-3 pr-12 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white outline-none shadow-sm transition-all" onkeypress="if(event.key === 'Enter') askQuestion()">
+                    <button onclick="askQuestion()" id="askBtn" class="absolute right-1.5 top-1.5 bottom-1.5 bg-indigo-600 hover:bg-indigo-700 text-white w-10 rounded-lg flex items-center justify-center transition-colors active:scale-95 shadow-sm">
+                        <svg class="w-4 h-4 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side: PDF Viewer -->
+        <div class="w-2/3 glass-panel rounded-2xl shadow-sm border border-white/50 overflow-hidden flex flex-col relative bg-white/40">
+            <div id="pdfPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center text-gray-400">
+                <svg class="w-20 h-20 mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <p class="text-xl font-medium text-gray-500">No Document Loaded</p>
+                <p class="text-sm mt-1">Upload a PDF to view it alongside your chat</p>
+            </div>
+            <iframe id="pdfViewer" class="w-full h-full border-none relative z-10 hidden" src=""></iframe>
+        </div>
+    </div>
+
+    <script>
+        let currentFile = "";
+
+        async function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const uploadBtn = document.getElementById('uploadBtn');
+            
+            if (!fileInput.files[0]) {
+                alert("Please select a file first.");
+                return;
+            }
+
+            // UI Feedback
+            const originalBtnHtml = uploadBtn.innerHTML;
+            uploadBtn.innerHTML = '<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Indexing...';
+            uploadBtn.disabled = true;
+            uploadBtn.classList.add('opacity-80', 'cursor-not-allowed');
+
+            try {
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+
+                const res = await fetch('/upload', { method: 'POST', body: formData });
+                const data = await res.json();
+                
+                currentFile = data.filename;
+                
+                // Show the PDF in the viewer
+                document.getElementById('pdfPlaceholder').classList.add('hidden');
+                const viewer = document.getElementById('pdfViewer');
+                viewer.src = `/view-pdf/${currentFile}`;
+                viewer.classList.remove('hidden');
+
+                // Success alert (custom styled)
+                const chatBox = document.getElementById('chatBox');
+                if(chatBox.innerHTML.includes('Ask questions about your uploaded PDF')) chatBox.innerHTML = '';
+                chatBox.innerHTML += `<div class="bg-green-50 text-green-700 p-3 rounded-xl text-sm border border-green-200 message-in shadow-sm">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        <span>${data.status} for <b>${currentFile}</b></span>
+                    </div>
+                </div>`;
+            } catch (err) {
+                alert("Error uploading file.");
+            } finally {
+                uploadBtn.innerHTML = originalBtnHtml;
+                uploadBtn.disabled = false;
+                uploadBtn.classList.remove('opacity-80', 'cursor-not-allowed');
+            }
+        }
+
+        async function askQuestion() {
+            const input = document.getElementById('questionInput');
+            const q = input.value.trim();
+            const chatBox = document.getElementById('chatBox');
+            const askBtn = document.getElementById('askBtn');
+            
+            if (!q) return;
+            
+            // Clear placeholder
+            if(chatBox.innerHTML.includes('Ask questions about your uploaded PDF')) chatBox.innerHTML = '';
+
+            // User Message
+            chatBox.innerHTML += `
+                <div class="flex flex-col items-end message-in">
+                    <div class="bg-indigo-600 text-white py-2.5 px-4 rounded-2xl rounded-tr-sm max-w-[85%] text-sm shadow-sm">
+                        ${q}
+                    </div>
+                </div>`;
+            
+            input.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // UI Feedback
+            const originalBtnHtml = askBtn.innerHTML;
+            askBtn.innerHTML = '<svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+            askBtn.disabled = true;
+
+            try {
+                const formData = new FormData();
+                formData.append('question', q);
+
+                const res = await fetch('/ask', { method: 'POST', body: formData });
+                const data = await res.json();
+
+                // Format newlines
+                const formattedAnswer = data.answer.replace(/\n/g, '<br>');
+
+                // AI Message
+                chatBox.innerHTML += `
+                    <div class="flex flex-col items-start message-in">
+                        <div class="bg-white border border-gray-100 text-gray-800 py-3 px-4 rounded-2xl rounded-tl-sm max-w-[95%] text-sm shadow-sm leading-relaxed">
+                            <div class="font-semibold text-indigo-600 mb-1.5 flex items-center gap-1.5 text-xs uppercase tracking-wider">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                Assistant
+                            </div>
+                            ${formattedAnswer}
+                        </div>
+                    </div>`;
+            } catch (err) {
+                chatBox.innerHTML += `<div class="bg-red-50 text-red-700 py-2.5 px-3 rounded-xl text-sm message-in border border-red-200 shadow-sm flex items-center gap-2">
+                    <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Error fetching answer. Is Ollama running?
+                </div>`;
+            } finally {
+                chatBox.scrollTop = chatBox.scrollHeight;
+                askBtn.innerHTML = originalBtnHtml;
+                askBtn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
