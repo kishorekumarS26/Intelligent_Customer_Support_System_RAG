@@ -4,7 +4,7 @@ Here is a complete **README.md** you can directly copy into your GitHub reposito
 
 #  Intelligent Customer Support System using RAG
 
-An AI-powered customer support system that uses **Retrieval-Augmented Generation (RAG)** to answer questions based on uploaded PDF documents. The system extracts content from PDFs, converts the content into semantic vector embeddings, retrieves the most relevant information using FAISS, and generates context-aware answers using the Llama 3.2 Large Language Model through Ollama.
+An AI-powered customer support system that uses **Retrieval-Augmented Generation (RAG)** to answer questions based on uploaded PDF documents. The system extracts content from PDFs, converts the content into semantic vector embeddings, retrieves the most relevant information using FAISS, and generates context-aware answers using the Llama 3.1:8b Large Language Model through Ollama.
 
 ---
 
@@ -27,7 +27,7 @@ Retrieve Relevant Document Chunks
       ↓
 Build Context
       ↓
-Llama 3.2 using Ollama
+Llama 3.1:8b using Ollama
       ↓
 AI-Generated Answer
 ```
@@ -42,7 +42,7 @@ AI-Generated Answer
 *  Generate semantic embeddings
 *  Fast vector similarity search using FAISS
 *  AI-powered question answering
-*  Local LLM support using Llama 3.2 and Ollama
+*  Local LLM support using Llama 3.1:8b and Ollama
 *  Local document processing and data privacy
 *  FastAPI-based backend
 *  PDF viewing support
@@ -64,7 +64,7 @@ AI-Generated Answer
 | NumPy                 | Numerical operations      |
 | Pickle                | Storing text chunks       |
 | Ollama                | Local LLM execution       |
-| Llama 3.2 3B          | Language model            |
+| Llama 3.1 8B          | Language model            |
 | Uvicorn               | ASGI server               |
 
 ---
@@ -91,7 +91,7 @@ Store in FAISS
 
 ### 2. Generation
 
-The retrieved information is sent to the Llama 3.2 model.
+The retrieved information is sent to the Llama 3.1:8b model.
 
 ```text
 User Question
@@ -150,7 +150,7 @@ This allows the AI to answer questions based on the uploaded documents.
                        ▼
               ┌─────────────────┐
               │  Ollama + LLM   │
-              │  Llama 3.2 3B   │
+              │  Llama 3.1 8B   │
               └────────┬────────┘
                        │
                        ▼
@@ -240,7 +240,7 @@ ollama
 Install Ollama on your system and download the Llama 3.2 model:
 
 ```bash
-ollama pull llama3.2:3b
+ollama pull llama3.1:8b
 ```
 
 Start Ollama:
@@ -253,7 +253,7 @@ The Python application uses:
 
 ```python
 ollama.chat(
-    model="llama3.2:3b",
+    model="llama3.1:8b",
     messages=[
         {
             "role": "user",
@@ -270,13 +270,13 @@ ollama.chat(
 Start the FastAPI server:
 
 ```bash
-python app.py
+python main.py
 ```
 
 Or:
 
 ```bash
-uvicorn app:app --reload
+uvicorn main:app --reload
 ```
 
 Open the application in your browser:
@@ -338,7 +338,7 @@ FAISS retrieves the top three semantically similar text chunks.
 
 ### Step 8: Generate Answer
 
-The retrieved context is sent to Llama 3.2 through Ollama.
+The retrieved context is sent to Llama 3.1:8b through Ollama.
 
 ---
 
